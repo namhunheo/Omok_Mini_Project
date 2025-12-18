@@ -24,6 +24,8 @@
     </c:forEach>
   </ul>
 
+  <button onclick="location.href='/omok/lobby/quick-enter'">빠른 방 입장</button>
+
   <form method="post" action="/omok/lobby/create">
     <button type="submit">방 생성</button>
   </form>
