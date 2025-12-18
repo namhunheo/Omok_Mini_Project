@@ -1,7 +1,9 @@
 package team.omok.omok_mini_project.controller;
 
+import team.omok.omok_mini_project.domain.RankingDTO;
 import team.omok.omok_mini_project.domain.Room;
 import team.omok.omok_mini_project.domain.UserVO;
+import team.omok.omok_mini_project.repository.LobbyDAO;
 import team.omok.omok_mini_project.service.RoomService;
 
 import javax.servlet.annotation.WebServlet;
@@ -64,8 +66,11 @@ public class LobbyServlet extends HttpServlet {
         // 기본: 로비 화면
         // 대기 중인 방 목록 가져옴
         List<Room> rooms = roomService.getWaitingRooms();
+        // 랭킹 정보 조회
+        List<RankingDTO> rankingList = LobbyDAO.getTopRank();
         // JSP에서 쓸수 있도록 request에 저장
-        request.setAttribute("rooms", rooms);
+        request.setAttribute("rankingList", rankingList); // 랭킹정보
+        request.setAttribute("rooms", rooms); // room 정보
         // 실제 화면인 lobby.jsp로 포워딩
         request.getRequestDispatcher("/WEB-INF/views/lobby.jsp")
                 .forward(request, response);

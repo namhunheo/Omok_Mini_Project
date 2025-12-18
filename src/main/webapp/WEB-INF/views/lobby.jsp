@@ -30,5 +30,18 @@
     <button type="submit">방 생성</button>
   </form>
 
+  <h3>상위 랭크 </h3>
+  <ul>
+    <c:forEach var="ranker" items="${rankingList}">
+      <li>
+          ${ranker.rank}위 | 닉네임: ${ranker.nickname} | 점수: ${ranker.rating}
+      </li>
+    </c:forEach>
+    <c:if test="${empty rankingList}">
+      <li>랭킹 데이터가 없습니다.</li>
+    </c:if>
+  </ul>
+
+
 </body>
 </html>
