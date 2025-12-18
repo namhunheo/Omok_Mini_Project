@@ -3,6 +3,7 @@ package team.omok.omok_mini_project.manager;
 import team.omok.omok_mini_project.domain.Room;
 import team.omok.omok_mini_project.domain.vo.UserVO;
 
+import javax.websocket.Session;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,14 @@ public class RoomManager {
         }
         System.out.println("[INFO]RoomManager - enterRoom:" + roomId);
         room.tryAddPlayer(user.getUserId());
+    }
+
+    public void enterRoomAsSpectator(String roomId, Session session){
+        Room room = rooms.get(roomId);
+        if (room == null) {
+            throw new IllegalArgumentException("방이 존재하지 않습니다");
+        }
+        room.addSpectatorSession(session);
     }
 
     public boolean removeRoom(String roomId){

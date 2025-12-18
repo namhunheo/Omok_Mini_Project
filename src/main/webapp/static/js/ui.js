@@ -11,7 +11,7 @@ function handleServerMessage(msg) {
         case "GAME_START":
             statusEl.innerText = "게임 시작!";
             countdownEl.innerText = "";
-            startGame("BLACK"); // 서버 payload 기준으로 나중에 수정
+            startGame(msg.payload.firstTurn); // 서버 payload 기준으로 나중에 수정
             break;
 
         case "MOVE":
@@ -31,6 +31,29 @@ function handleServerMessage(msg) {
             alert("게임 종료: " + msg.payload.reason);
             location.href = "/omok/lobby";
             break;
+
+        case "CHAT":
+            const { senderRole, playerIndex, message } = msg.payload;
+
+            if (senderRole === "PLAYER") {
+                const bubble = document.getElementById(
+                    playerIndex === 1 ? "bubble-p1" : "bubble-p2"
+                );
+
+                bubble.innerText = message;
+                bubble.style.display = "block";
+
+                setTimeout(() => {
+                    bubble.style.display = "none";
+                }, 3000);
+            } else {
+                const chatLog = document.getElementById("chatLog");
+                const div = document.createElement("div");
+                div.innerText = message;
+                chatLog.appendChild(div);
+            }
+            break;
+
     }
 }
 
@@ -42,7 +65,8 @@ function showCountdown(sec) {
 function renderBoard() {
     boardEl.innerHTML = "";
     boardEl.className = "board";
-
+    console.log("보드 그리기ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ")
+    console.log("boardEl:", boardEl);
     for (let y = 0; y < BOARD_SIZE; y++) {
         for (let x = 0; x < BOARD_SIZE; x++) {
             const cell = document.createElement("div");

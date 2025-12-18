@@ -12,6 +12,7 @@ import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
+import java.util.Map;
 
 @ServerEndpoint(
         configurator = HttpSessionConfigurator.class,
@@ -67,8 +68,21 @@ public class GameWebSocket {
                     room.handleMove(userId, payload.getX(), payload.getY());
                 }
                 case CHAT -> {
+                    String msg = (String) wsMessage.getPayload();
 
+                    boolean isPlayer = room.getPlayers().contains(userId);
+                    int playerIndex = isPlayer ? room.getPlayers().indexOf(userId) + 1 : -1;
+
+                    room.broadcast(new WsMessage<>(
+                            MessageType.CHAT,
+                            Map.of(
+                                    "senderRole", isPlayer ? "PLAYER" : "SPECTATOR",
+                                    "playerIndex", playerIndex,
+                                    "message", msg
+                            )
+                    ));
                 }
+
                 default -> {
                     sendError(session, "UNSUPPORTED_MESSAGE");
                 }

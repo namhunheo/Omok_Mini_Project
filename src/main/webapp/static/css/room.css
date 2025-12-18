@@ -31,9 +31,20 @@
 }
 
 #board {
+    display: grid;
+    grid-template-columns: repeat(15, 30px);
+    grid-template-rows: repeat(15, 30px);
     width: 450px;
     height: 450px;
-    margin: auto;
+    border: 2px solid #000;
+    background-color: #dcb35c;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0,0,0,0.4);
 }
 
 /* 플레이어 프로필 */

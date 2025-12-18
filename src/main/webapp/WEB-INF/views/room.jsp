@@ -199,15 +199,49 @@
 <body>
 
 <h2>오목 게임방</h2>
-<p>Room ID: <%= room.getRoomId() %></p>
-<p>Owner: <%= room.getOwnerId() %></p>
+<p>방 ID: <%= room.getRoomId() %></p>
+<p>방장: <%= room.getOwnerId() %></p>
 
 <p id="status">상대방을 기다리는 중...</p>
 <p id="countdown"></p>
 
-<div id="board"></div>
+<%--<div id="board"></div>--%>
 
+<body>
 
+<button id="leaveBtn">방 나가기</button>
+
+<div class="container">
+  <!-- 게임 영역 -->
+  <div class="game-area">
+    <div class="board-wrapper">
+      <div id="board"></div>
+
+      <!-- 플레이어 프로필 -->
+      <div class="player player-1">
+        <img src="<%=request.getContextPath()%>/omok/static/img/patrik.png">
+        <div class="bubble" id="bubble-p1"></div>
+      </div>
+
+      <div class="player player-2">
+        <img src="<%=request.getContextPath()%>/omok/static/img/spongebob.png">
+        <div class="bubble" id="bubble-p2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 채팅 영역 -->
+  <div class="chat-area">
+    <h3>CHATTING</h3>
+    <div id="chatLog"></div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="메시지 입력">
+      <button id="sendChat">전송</button>
+    </div>
+  </div>
+</div>
 
 </body>
+
+
 </html>

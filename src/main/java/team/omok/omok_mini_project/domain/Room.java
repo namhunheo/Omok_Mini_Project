@@ -136,6 +136,10 @@ public class Room {
         players.add(userId);
     }
 
+    public synchronized void addSpectatorSession(Session session) {
+        spectators.add(session);
+    }
+
 
     ////////////// 게임 흐름 제어 ///////////////
 
@@ -243,10 +247,12 @@ public class Room {
         if(status != RoomStatus.COUNTDOWN) return;
         if(!isReady()) return;
 
-//        broadcast("{\"type\":\"GAME_START\"}");
         broadcast(new WsMessage<>(
                 MessageType.GAME_START,
-                null
+                Map.of(
+                        "firstTurn", "BLACK",
+                        "players", players
+                )
         ));
         updateStatus(RoomStatus.PLAYING);
     }
