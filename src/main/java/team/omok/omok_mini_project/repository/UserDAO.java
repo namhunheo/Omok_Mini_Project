@@ -1,6 +1,6 @@
 package team.omok.omok_mini_project.repository;
 
-import team.omok.omok_mini_project.domain.UserVO;
+import team.omok.omok_mini_project.domain.vo.UserVO;
 import team.omok.omok_mini_project.util.DBConnection;
 
 import java.sql.Connection;

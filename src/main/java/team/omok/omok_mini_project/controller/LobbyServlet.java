@@ -1,7 +1,7 @@
 package team.omok.omok_mini_project.controller;
 
 import team.omok.omok_mini_project.domain.Room;
-import team.omok.omok_mini_project.domain.UserVO;
+import team.omok.omok_mini_project.domain.vo.UserVO;
 import team.omok.omok_mini_project.service.RoomService;
 
 import javax.servlet.annotation.WebServlet;

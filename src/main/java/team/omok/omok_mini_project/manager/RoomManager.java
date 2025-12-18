@@ -1,7 +1,7 @@
 package team.omok.omok_mini_project.manager;
 
 import team.omok.omok_mini_project.domain.Room;
-import team.omok.omok_mini_project.domain.UserVO;
+import team.omok.omok_mini_project.domain.vo.UserVO;
 
 import java.util.Comparator;
 import java.util.List;
