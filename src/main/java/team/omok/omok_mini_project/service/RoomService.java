@@ -4,6 +4,7 @@ import team.omok.omok_mini_project.domain.Room;
 import team.omok.omok_mini_project.domain.vo.UserVO;
 import team.omok.omok_mini_project.manager.RoomManager;
 
+import javax.websocket.Session;
 import java.util.List;
 
 public class RoomService {
@@ -28,5 +29,14 @@ public class RoomService {
     // 빠른 입장: 가장 먼저 생성된 대기 방 반환
     public Room getFirstWaitingRoom() {
         return roomManager.getFirstWaitingRoom();
+    }
+
+    // 모든 방 목록 가져오기
+    public List<Room> getAllRooms() {
+        return roomManager.getAllRooms();
+    }
+
+    public void enterRoomAsSpectator(String roomId, Session session){
+        roomManager.enterRoomAsSpectator(roomId, session);
     }
 }
