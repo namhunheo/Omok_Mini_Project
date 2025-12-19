@@ -35,11 +35,11 @@ public class RoomManager {
                 .toList();
     }
 
-    public void enterRoom(String roomId, UserVO user) {
-        Room room = rooms.get(roomId);
-        if (room == null) {
-            throw new IllegalArgumentException("방 없음");
-        }
-        room.addPlayer(user.getId());
-    }
+//    public void enterRoom(String roomId, UserVO user) {
+//        Room room = rooms.get(roomId);
+//        if (room == null) {
+//            throw new IllegalArgumentException("방 없음");
+//        }
+//        room.addPlayer(user.getId());
+//    }
 }
