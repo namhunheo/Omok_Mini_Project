@@ -1,5 +1,6 @@
 package team.omok.omok_mini_project.manager;
 
+import team.omok.omok_mini_project.controller.LobbyWebSocket;
 import team.omok.omok_mini_project.domain.Room;
 import team.omok.omok_mini_project.domain.vo.UserVO;
 
@@ -38,8 +39,10 @@ public class RoomManager {
         rooms.put(roomId, room);
         System.out.println("[INFO]RoomManager - createRoom:" + roomId);
 
-        // 로비에 방 목록 업데이트 전송 (실시간으로 방이 나타남)
-        LobbyManager.getInstance().broadcastRoomList();
+        // TODO:
+        // 현재는 단순화를 위해 RoomManager에서 직접 LobbyWebSocket을 호출한다.
+        // 추후 이벤트 기반 구조로 변경 시 제거 대상.
+        //LobbyWebSocket.broadcastRoomList();
 
         return room;
     }
@@ -52,8 +55,10 @@ public class RoomManager {
         System.out.println("[INFO]RoomManager - enterRoom:" + roomId);
         room.tryAddPlayer(user.getUserId());
 
-        // 로비에 방 목록 업데이트 전송 (방이 가득 차면 목록에서 사라짐)
-        LobbyManager.getInstance().broadcastRoomList();
+        // TODO:
+        // 현재는 단순화를 위해 RoomManager에서 직접 LobbyWebSocket을 호출한다.
+        // 추후 이벤트 기반 구조로 변경 시 제거 대상.
+        //LobbyWebSocket.broadcastRoomList();
     }
 
     public void enterRoomAsSpectator(String roomId, Session session){
