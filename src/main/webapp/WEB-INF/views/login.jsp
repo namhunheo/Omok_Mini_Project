@@ -42,7 +42,7 @@
 
         <!-- 시작하기 버튼(이미지 버튼) -->
         <button class="start-btn" type="submit" aria-label="로그인">
-            <img src="${pageContext.request.contextPath}/static/img/loginButton.png" alt="로그인">
+            <img src="${pageContext.request.contextPath}/static/img/login_btn.png" alt="로그인">
         </button>
 
     </form>
