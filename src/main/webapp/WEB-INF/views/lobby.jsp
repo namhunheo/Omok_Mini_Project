@@ -22,35 +22,37 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%; /* 높이도 100% 줘야 세로도 꽉 찹니다 */
-      overflow: hidden; /* 스크롤바 없애기 (게임 느낌) */
+      height: 100%;
+      overflow: hidden;
       background-image: url("/image/LobbyBackground.jpg");
     }
 
-    /* 전체 틀 (좌표의 기준점) */
+    /* 전체 틀 */
     .wrap {
       width: 100%;
       height: 100%;
       border-radius: 15px;
-      position: relative; /* ★중요: 자식 요소들이 이 박스를 기준으로 위치를 잡음 */
-      padding: 20px; /* 끝에서 조금 띄우기 */
+      position: relative; /* 자식 요소들이 이 박스를 기준으로 위치를 잡음 */
+      padding: 20px;
     }
 
-    /* [공통 박스 스타일] */
+    /* 공통 박스 스타일 */
     .panel {
-      height: 90%; /* 화면 높이의 90%만 사용 (여백 고려) */
+      height: 90%;
       border: 3px solid black;
       border-radius: 15px;
       background-color: #eee;
       padding: 20px; /* 패널 내부 글씨 여백 */
     }
+    /* 랭킹 패널 */
     .left-panel {
-      width: 48%;      /* 전체의 절반 */
+      width: 48%;
       float: left;
       height: 85%;
       margin-top: 40px;
 
     }
+    /* 방 리스트, 채팅 */
     .right-panel {
       width: 48%;
       float: right;
@@ -59,29 +61,31 @@
 
       /* 내부 요소 정렬을 위한 설정 */
       display: flex;
-      flex-direction: column; /* 위아래로 쌓기 */
-      justify-content: space-between; /* 끝과 끝으로 벌리기 */
+      flex-direction: column;
+      justify-content: space-between;
     }
+    /* 방 리스트 */
     .room-list-container {
-      flex-grow: 1;      /* 높이 꽉 채우기 */
+      flex-grow: 1;
       overflow-y: auto;  /* 스크롤 생기게 */
       margin-bottom: 10px;
-      border: 2px inset #ddd; /* 살짝 들어간 느낌 */
+      border: 2px inset #ddd;
       background-color: #fff;
       border-radius: 10px;
       padding: 10px;
     }
     .room-item {
-      background-color: #e3f2fd; /* 연한 파랑 */
+      background-color: #e3f2fd;
       border: 2px solid #2196f3;
       border-radius: 8px;
       padding: 10px;
       margin-bottom: 8px;
       display: flex;
-      justify-content: space-between; /* 좌우 끝으로 배치 */
+      justify-content: space-between;
       align-items: center;
       transition: 0.2s;
     }
+    /* 마우스 effect*/
     .room-item:hover {
       transform: scale(1.02);
       background-color: #bbdefb;
@@ -99,17 +103,17 @@
       font-weight: bold;
     }
 
-    /* 2. 하단 컨트롤 영역 (버튼들) */
+    /* 2단 컨트롤 영역 (btn) */
     .control-area {
-      height: auto; /* 내용물만큼 */
+      height: auto;
       background-color: #ddd;
       border-radius: 10px;
       padding: 10px;
       border: 2px solid #999;
 
       display: flex;
-      flex-direction: column; /* 버튼들을 위아래로 배치 (취향따라 row로 변경 가능) */
-      gap: 5px; /* 버튼 사이 간격 */
+      flex-direction: column;
+      gap: 5px;
     }
 
     /* 큰 버튼 공통 스타일 */
@@ -123,34 +127,36 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    .btn-create { background-color: #ff9800; } /* 주황색 */
-    .btn-quick { background-color: #4caf50; }  /* 초록색 */
+    .btn-create { background-color: #ff9800; }
+    .btn-quick { background-color: #4caf50; }
 
     /* 방 번호 입력 폼 */
     .input-group {
       display: flex;
       margin-top: 5px;
     }
+    /* 방 코드 입력 부분 */
     .input-code {
       flex-grow: 1;
       padding: 8px;
       border: 2px solid black;
-      border-radius: 5px 0 0 5px; /* 왼쪽만 둥글게 */
+      border-radius: 5px 0 0 5px;
     }
+    /* 코드 입력 후 전송 버튼*/
     .btn-code {
       padding: 8px 15px;
       background-color: #607d8b;
       color: white;
       font-weight: bold;
       border: 2px solid black;
-      border-left: none; /* 겹치는 테두리 제거 */
-      border-radius: 0 5px 5px 0; /* 오른쪽만 둥글게 */
+      border-left: none;
+      border-radius: 0 5px 5px 0;
       cursor: pointer;
     }
     .user-profile {
-      position: absolute; /* 48% 박스들과 상관없이 내 맘대로 위치 선정 */
-      top: 10px;    /* 위에서 20px */
-      right: 20px;  /* 오른쪽에서 20px */
+      position: absolute;
+      top: 10px;
+      right: 20px;
 
       width: 120px;
       height: 40px;
@@ -158,34 +164,34 @@
       border-radius: 10px;
       border: 2px solid white;
       cursor: pointer;
-      z-index: 100; /* 다른 박스들보다 무조건 위에 뜨게 함 */
+      z-index: 100;
       text-align: center;
       line-height: 40px;
       color: white;
       font-weight: bold;
     }
-    /* [5] 프로필 클릭 시 나올 메뉴 (숨김 상태) */
+    /* 프로필 클릭 시 나올 메뉴 (숨김 상태) */
     .profile-menu {
-      display: none; /* 평소엔 안 보임 */
+      display: none;
       position: absolute;
-      top: 90px;   /* 프로필 바로 아래 */
-      right: 20px; /* 오른쪽 라인 맞춤 */
+      top: 90px;
+      right: 20px;
 
       width: 200px;
       background-color: white;
       border: 2px solid black;
       border-radius: 5px;
       padding: 5px;
-      z-index: 101; /* 프로필보다 더 위에 */
+      z-index: 101;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     .rank-list-container {
       width: 100%;
       height: 100%;
-      overflow-y: auto; /* 내용이 많으면 스크롤 */
+      overflow-y: auto;
     }
     .rank-item {
-      /* [수정] 양옆 여유 공간 확보를 위해 너비를 줄임 */
+
       width: 96%;
       margin: 0 auto 10px auto;
 
@@ -194,7 +200,6 @@
       border-radius: 10px;
       padding: 10px;
 
-      /* 기존 margin-bottom: 10px; 은 위 margin 속성에 합쳐짐 */
       display: flex;
       align-items: center;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
@@ -202,40 +207,41 @@
     }
     .rank-item:hover {
       transform: scale(1.02); /* 마우스 올리면 살짝 커짐 */
-      background-color: #fff9c4; /* 연한 노란색 하이라이트 */
+      background-color: #fff9c4;
     }
+    /* 순위 표시 아이콘*/
     .rank-badge {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background-color: #ddd; /* 기본 회색 */
+      background-color: #ddd;
       color: black;
       text-align: center;
-      line-height: 30px; /* 글자 수직 중앙 */
+      line-height: 30px;
       font-weight: bold;
       margin-right: 15px;
       border: 1px solid #999;
     }
 
-    /*1,2,3등은 금은동 배지를 추가 */
+    /* 1,2,3등은 금은동 배지를 추가 */
     .rank-item:nth-child(1) .rank-badge { background-color: #ffd700; border-color: #d4af37; }
     .rank-item:nth-child(2) .rank-badge { background-color: #c0c0c0; border-color: #a0a0a0; }
     .rank-item:nth-child(3) .rank-badge { background-color: #cd7f32; border-color: #8b4513; }
 
-    /* 프로필 이미지 (원형) */
+    /* 프로필 이미지  */
     .rank-profile-img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       border: 1px solid black;
-      background-color: #ccc; /* 이미지 없을 때 회색 */
+      background-color: #ccc; /* 색 수정 필요 */
       margin-right: 15px;
-      /* 실제 이미지가 있으면 cover로 채움 */
+
       object-fit: cover;
     }
     /* 닉네임과 점수 */
     .rank-info {
-      flex-grow: 1; /* 남은 공간 차지 */
+      flex-grow: 1;
       text-align: left;
     }
     .rank-nickname {
@@ -251,10 +257,10 @@
 
   </style>
   <script>
+      /* 유저 프로필 토글 */
     function toggleMenu() {
       var menu = document.getElementById("myMenu");
-      // 현재 화면에 보이면(block) -> 숨기기(none)
-      // 안 보이면(none 또는 빈값) -> 보이기(block)
+
       if (menu.style.display === "block") {
         menu.style.display = "none";
       } else {
@@ -271,6 +277,7 @@
     User
   </div>
 
+    <%-- 유저 프로필 조회 더미 데이터   --%>
   <div id="myMenu" class="profile-menu">
     <strong>닉네임: 징징이</strong><br>
     승률: 50%<br>
@@ -279,6 +286,7 @@
     로그아웃
   </div>
 
+    <%-- 랭크    --%>
   <div class="left-panel panel">
     <h3 style="text-align: center; margin-top: 0; border-bottom: 2px dashed #999; padding-bottom: 10px;">
       여기서 제일 잘하는 사람
@@ -302,9 +310,10 @@
       <c:if test="${empty rankingList}">
         <div style="text-align: center; padding: 20px; color: gray;">
           아직 랭킹 정보가 없습니다.<br>
-          게임의 첫 승리자가 되어보세요!
         </div>
       </c:if>
+    </div>
+  </div>
 
   <h2>로비</h2>
 
@@ -321,15 +330,15 @@
     <div class="right-section">
         <!-- 방 목록 (위) -->
         <div class="room-section">
-            <h2>🎮 대기 방</h2>
+            <h2>대기 방</h2>
             <p class="status" id="lobbyStatus">로비 연결 중...</p>
 
-            <!-- 방 목록 (동적으로 렌더링됨) -->
+            <!-- 방 목록  -->
             <ul class="room-list" id="roomList">
                 <!-- JavaScript로 동적 생성 -->
             </ul>
 
-            <!-- 버튼들 -->
+            <!-- btn -->
             <div class="action-buttons">
                 <button onclick="location.href='/omok/lobby/quick-enter'">⚡ 빠른 입장</button>
                 <form method="post" action="/omok/lobby/create" style="flex: 1; margin: 0;">
