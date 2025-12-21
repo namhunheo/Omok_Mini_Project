@@ -210,7 +210,7 @@ body {
 .cell.white::after {
     content: "";
     position: absolute;
-    inset: 12%;               /* ← 조개 크기 조절 */
+    inset: 5%;               /* ← 조개 크기 조절 */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

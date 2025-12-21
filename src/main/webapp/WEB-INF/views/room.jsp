@@ -26,8 +26,9 @@
 
   <!-- JS -->
   <script defer src="<%=request.getContextPath()%>/static/js/game.js"></script>
-  <script defer src="<%=request.getContextPath()%>/static/js/ui.js"></script>
+  <script defer src="<%=request.getContextPath()%>/static/js/game_ui.js"></script>
   <script defer src="<%=request.getContextPath()%>/static/js/websocket.js"></script>
+</script>
 </head>
 
 <body>

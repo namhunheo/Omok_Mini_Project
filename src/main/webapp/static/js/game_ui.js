@@ -4,7 +4,9 @@ const boardEl = document.getElementById("board");
 const playerLeftEl = document.querySelector(".player-left");
 const playerRightEl = document.querySelector(".player-right");
 let gridLayer = null;
-// console.log("ui.js loaded", boardEl);
+let myColor = null;
+let myUserId = null;
+// console.log("game_ui.js loaded", boardEl);
 
 const messageHandlers = {
     JOIN: handleJoin,
@@ -18,7 +20,7 @@ const messageHandlers = {
     ERROR: handleError,
 };
 
-let myColor = null;
+
 
 function handleServerMessage(msg) {
     const handler = messageHandlers[msg.type];
@@ -48,6 +50,9 @@ function handleGameStart(payload) {
         myColor = payload.myColor;
         console.log("내 색:", myColor);
     }
+    if(payload.myUserId){
+        myUserId = payload.myUserId;
+    }
 
     startGame(payload.firstTurn);
 }
@@ -62,11 +67,24 @@ function handleRoomWait(payload) {
 }
 
 function handleGameEnd(payload) {
-    if (payload.winner) {
+
+    // 타임아웃으로 인한 게임 종료 처리
+    if(payload.reason === "TIMEOUT"){
+        if (payload.winner === myUserId) {
+            alert("상대가 시간 초과로 패배했습니다!");
+        } else {
+            alert("시간 초과로 패배했습니다.");
+        }
+        return;
+    }
+
+    if (payload.winner === myUserId) {
         alert("🎉 게임 종료! 승리하셨습니다!");
-    } else if (payload.reason) {
+    } else if (payload.winner !== myUserId) {
+        alert("게임에서 패배했습니다 :(")
+    } else if(payload.winner){
         alert("게임 종료: " + payload.reason);
-    } else {
+    }else{
         alert("게임이 종료되었습니다.");
     }
 

@@ -87,6 +87,7 @@ public class Room {
             if(this.players.contains(userId)){
                 UserVO vo = userService.getUserById(userId);
                 this.playerSessions.add(session);
+                // 디버깅용
                 broadcastAll(new WsMessage<>(
                         MessageType.JOIN,
                         Map.of(
@@ -218,6 +219,7 @@ public class Room {
             sendToSession(s, new WsMessage<>(
                     MessageType.GAME_START,
                     Map.of(
+                            "myUserId", userId,
                             "myColor", myStone,
                             "firstTurn", game.state.getTurn().toString()
                     )
@@ -261,8 +263,24 @@ public class Room {
                         )
                 ));
             }
+            // 유효하지 않은 자리
+            case INVALID_POSITION -> {
+                sendErrorToUser(userId, result.getType().name(), result.getReason());
+            }
             // 유효하지 않은 턴 처리
-            case INVALID_TURN, INVALID_POSITION -> {
+            case INVALID_TURN -> {
+                // 타임아웃인 경우, 게임 종료 및 승자 처리
+                if (result.getReason().equals("TIMEOUT")){
+                    broadcastAll(new WsMessage<>(
+                            MessageType.GAME_END,
+                            Map.of(
+                                    "reason", "TIMEOUT",
+                                    "winner", game.state.getWinnerId()
+                            )
+                    ));
+
+                    endGame();
+                }
                 sendErrorToUser(userId, result.getType().name(), result.getReason());
             }
 
