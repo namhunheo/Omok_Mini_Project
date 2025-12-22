@@ -152,6 +152,7 @@ public class RoomService {
                 // 방이 비었으므로 남은 사람에게 알릴 필요 없음 (이미 다 나감)
                 // 방 제거 로직만 수행
                 handleGameEnd(room);
+
             }
 
             case SPECTATOR_LEFT -> {
@@ -297,7 +298,6 @@ public class RoomService {
         // cleanUp();
         roomManager.removeRoom(room.getRoomId());
 
-        // TODO: LobbyWebSocket에서 방 목록 실시간 갱신을 위한 broadcast 추가
     }
 
 

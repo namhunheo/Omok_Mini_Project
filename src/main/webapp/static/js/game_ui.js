@@ -60,6 +60,8 @@ function handleJoin(payload) {
 
 function handleLeave(payload) {
     console.log("LEAVE:", payload);
+    stopTurnTimer();
+    clearInterval();
 
     // 채팅창에 퇴장 알림 출력
     if (payload.nickname) {
@@ -105,8 +107,8 @@ function handleRoomWait(payload) {
 
 function handleGameEnd(payload) {
     console.log(myUserId);
-    clearInterval(timerInterval);
-
+    // clearInterval(timerInterval);
+    stopTurnTimer();
     // 타임아웃으로 인한 게임 종료 처리
     if (payload.reason === "TIMEOUT") {
         // 플레이어
@@ -117,10 +119,7 @@ function handleGameEnd(payload) {
                 alert("시간 초과로 패배했습니다.");
             }
         }
-        return;
-    }
-
-    if (payload.winner === myUserId) {
+    }else if (payload.winner === myUserId) {
         alert("🎉 게임 종료! 승리하셨습니다!");
     } else if (payload.winner !== myUserId) {
         alert("게임에서 패배했습니다 :(")
@@ -350,4 +349,8 @@ function startTurnTimer() {
             placeStone(-1, -1);
         }
     }, 100);
+}
+function stopTurnTimer() {
+    clearInterval(timerInterval);
+    timerFill.style.width = "0%";
 }
