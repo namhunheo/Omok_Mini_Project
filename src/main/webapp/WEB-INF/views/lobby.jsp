@@ -83,7 +83,7 @@
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            background-color: #ddd;
+            background-color: #ffffff;
             color: black;
             text-align: center;
             line-height: 28px;
