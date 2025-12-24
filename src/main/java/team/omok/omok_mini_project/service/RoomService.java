@@ -139,6 +139,7 @@ public class RoomService {
         switch (result) {
             case PLAYER_LEFT_DURING_GAME -> {
                 leavePayload.put("reason", "PLAYER_GG"); // 기권 패
+
                 // 플레이어 GG는 게임 종료 사유이므로 모두에게 알림
                 broadcaster.broadcastAll(room, new WsMessage<>(MessageType.LEAVE, leavePayload));
                 handleGameEnd(room);

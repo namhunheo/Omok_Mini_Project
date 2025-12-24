@@ -7,7 +7,7 @@ const playerRightEl = document.querySelector(".player-right");
 let gridLayer = null;
 let myColor = null;
 let myUserId = null;
-let isSpectator = false;
+let myRole = false;
 
 // 타이머 추가
 let timerInterval = null;
@@ -68,10 +68,19 @@ function handleLeave(payload) {
         appendSystemMessage(`[알림] ${payload.nickname}님이 퇴장하셨습니다.`);
     }
 
-    // 플레이어가 나갔을 때 UI 초기화 (기본 이미지로 변경 등) 필요 시 추가
-    if (payload.reason === "PLAYER_LEFT" || payload.reason === "PLAYER_GG") {
-        resetPlayerUI(payload.userId);
+    if(payload.reason === "PLAYER_GG"){
+        alert(`${payload.nickname} 님이 기권하였습니다.`);
     }
+
+    // 잠깐 딜레이 주고 이동해도 좋음
+    setTimeout(() => {
+        location.href = "/omok/lobby";
+    }, 500);
+
+    // 플레이어가 나갔을 때 UI 초기화 (기본 이미지로 변경 등) 필요 시 추가
+    // if (payload.reason === "PLAYER_LEFT" || payload.reason === "PLAYER_GG") {
+    //     resetPlayerUI(payload.userId);
+    // }
 }
 
 function handleCountdown(payload) {
@@ -89,6 +98,10 @@ function handleGameStart(payload) {
 
     if (payload.myUserId) {
         myUserId = payload.myUserId;
+    }
+
+    if(payload.role){
+        myRole = payload.role;
     }
 
     startGame(payload.firstTurn);
@@ -111,36 +124,31 @@ function handleGameEnd(payload) {
     stopTurnTimer();
     // 타임아웃으로 인한 게임 종료 처리
     if (payload.reason === "TIMEOUT") {
-        // 플레이어
-        if (payload.winner) {
+        if(myRole === "SPECTATOR"){
+            alert("게임이 종료되었습니다!");
+        } else if (payload.winner) {
             if (payload.winner === myUserId) {
                 alert("상대가 시간 초과로 패배했습니다!");
-            } else if (payload !== myUserId){
+            } else {
                 alert("시간 초과로 패배했습니다.");
-            } else{
-                alert("게임이 종료되었습니다!");
             }
         }
+    }else {
+        if(myRole === "SPECTATOR"){
+            alert("게임이 종료되었습니다!");
+        } else if (payload.winner === myUserId) {
+            alert("🎉 게임 종료! 승리하셨습니다!");
+        } else {
+            alert("게임에서 패배했습니다!!");
+        }
 
-        setTimeout(() => {
-            location.href = "/omok/lobby";
-        }, 300);
     }
 
-    if (payload.winner === myUserId) {
-        alert("🎉 게임 종료! 승리하셨습니다!");
-    } else if (payload.winner !== myUserId) {
-        alert("게임에서 패배했습니다 :(")
-    } else if (payload.winner) {
-        alert("게임 종료: " + payload.reason);
-    } else {
-        alert("게임이 종료되었습니다.");
-    }
 
     // 잠깐 딜레이 주고 이동해도 좋음
     setTimeout(() => {
         location.href = "/omok/lobby";
-    }, 300);
+    }, 500);
 }
 
 function handleChat(payload) {
@@ -362,5 +370,4 @@ function startTurnTimer() {
 }
 function stopTurnTimer() {
     clearInterval(timerInterval);
-    // timerFill.style.width = "0%";
 }

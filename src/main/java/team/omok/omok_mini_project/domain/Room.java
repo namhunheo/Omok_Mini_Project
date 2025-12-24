@@ -245,7 +245,8 @@ public class Room {
                             "myUserId", userId,
                             "blackPlayerId", game.state.getBlackUserId(),
                             "whitePlayerId", game.state.getWhiteUserId(),
-                            "firstTurn", "BLACK"
+                            "firstTurn", "BLACK",
+                            "role", "PLAYER"
 
                     )
             ));
@@ -258,7 +259,8 @@ public class Room {
                 Map.of(
                         "blackPlayerId", game.state.getBlackUserId(),
                         "whitePlayerId", game.state.getWhiteUserId(),
-                        "firstTurn", "BLACK"
+                        "firstTurn", "BLACK",
+                        "role","SPECTATOR"
                 )
         );
         broadcaster.broadcastToSpectators(this, spectatorMsg);
