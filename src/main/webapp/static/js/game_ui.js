@@ -72,10 +72,12 @@ function handleLeave(payload) {
         alert(`${payload.nickname} 님이 기권하였습니다.`);
     }
 
-    // 잠깐 딜레이 주고 이동해도 좋음
-    setTimeout(() => {
-        location.href = "/omok/lobby";
-    }, 500);
+	if(payload.reason !== "SPECTATOR_LEFT"){
+		    // 잠깐 딜레이 주고 이동해도 좋음
+	    setTimeout(() => {
+	        location.href = "/omok/lobby";
+	    }, 500);		
+	}
 
     // 플레이어가 나갔을 때 UI 초기화 (기본 이미지로 변경 등) 필요 시 추가
     // if (payload.reason === "PLAYER_LEFT" || payload.reason === "PLAYER_GG") {
