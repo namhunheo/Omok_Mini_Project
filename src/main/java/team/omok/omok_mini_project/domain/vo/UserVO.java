@@ -1,4 +1,4 @@
-package team.omok.omok_mini_project.domain;
+package team.omok.omok_mini_project.domain.vo;
 
 import lombok.Data;
 
@@ -12,6 +12,6 @@ public class UserVO {
     private Date createdAt;
     private String nickname;
     private String profileImg;
-
-
+    private boolean guest;
+    private RecordVO record;
 }

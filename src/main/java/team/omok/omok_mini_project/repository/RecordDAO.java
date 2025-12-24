@@ -1,6 +1,6 @@
 package team.omok.omok_mini_project.repository;
 
-import team.omok.omok_mini_project.domain.RankingDTO;
+import team.omok.omok_mini_project.domain.dto.RankingDTO;
 import team.omok.omok_mini_project.util.DBConnection;
 
 import java.sql.Connection;
@@ -9,14 +9,14 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LobbyDAO {
-    public List<RankingDTO> getTopRank() {
+public class RecordDAO {
+    public static List<RankingDTO> getTopRank() {
         List<RankingDTO> list = new ArrayList<RankingDTO>();
 
-        String sql = "SELECT u.nickname, r.rating " +
+        String sql = "SELECT u.nickname, r.rating, u.profile_img " +
                 "FROM record r JOIN users u " +
                 "ON r.user_id = u.user_id " +
-                "ORDER BY r.rating DESC LIMIT 5";
+                "ORDER BY r.rating DESC LIMIT 10";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()){
@@ -26,6 +26,7 @@ public class LobbyDAO {
                 dto.setRank(currentRank++);
                 dto.setNickname(rs.getString("nickname"));
                 dto.setRating(rs.getInt("rating"));
+                dto.setProfileImg(rs.getString("profile_img"));
                 list.add(dto);
             }
         } catch (Exception e) {
@@ -34,15 +35,14 @@ public class LobbyDAO {
         return list;
     }
 
-    public void updataRating(int userId, boolean isWin) {
+    public void updateRating(int userId, boolean isWin) {
         String sql;
 
         if(isWin) {
-            sql = "UPDATE record SET rating = rating +15, win_count = win_count+1 WHERE user_id = ?";
+            sql = "UPDATE record SET rating = rating +15, win_count = win_count+1, updated_at = NOW() WHERE user_id = ?";
         } else {
-            sql = "UPDATE record SET rating = GREATEST(0, rating - 10), lose_count = lose_count + 1 WHERE user_id = ?";
+            sql = "UPDATE record SET rating = GREATEST(0, rating - 10), lose_count = lose_count + 1, updated_at = NOW() WHERE user_id = ?";
         }
-
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -50,6 +50,15 @@ public class LobbyDAO {
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    //회원가입 시 레코드 기본값세팅
+    public void insertRecordDefault(Connection con, int userId) throws Exception {
+        String sql = "INSERT INTO record (user_id) VALUES (?)";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.executeUpdate();
         }
     }
 }

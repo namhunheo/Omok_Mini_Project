@@ -1,171 +1,119 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: leeyj
-  Date: 25. 12. 14.
-  Time: 오후 2:09
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="team.omok.omok_mini_project.domain.Room" %>
+<%@ page import="team.omok.omok_mini_project.domain.vo.UserVO" %>
 <%
-  Room room = (Room) request.getAttribute("room");
+    Room room = (Room) request.getAttribute("room");
+    UserVO loginUser = (UserVO) session.getAttribute("loginUser");
 %>
 
+
+<!DOCTYPE html>
 <html>
 <head>
-  <title>게임방</title>
+    <title>오목 게임방</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/room.css">
+
+    <!-- 서버에서 내려주는 초기 데이터 -->
+    <script>
+        const ROOM_ID = "<%= room.getRoomId() %>";
+        const OWNER_ID = "<%= room.getOwnerId() %>";
+
+        // 관전 여부 (URL 파라미터 기준) true or false
+        const IS_SPECTATOR = <%= Boolean.TRUE.equals(request.getAttribute("isSpectator")) %>;
+
+        let WS_URL = "ws://" + location.host
+            + "<%=request.getContextPath()%>/ws/game/"
+            + ROOM_ID;
+
+        if (IS_SPECTATOR) {
+            WS_URL += "?role=spectator";
+        } else {
+            WS_URL += "?role=player"
+        }
+        console.log("[room.jsp]" + "IS_SPECTATOR=" + IS_SPECTATOR + " : WS_URL=" + WS_URL);
+    </script>
+
+
+    <!-- JS -->
+    <script defer src="<%=request.getContextPath()%>/static/js/game.js"></script>
+    <script defer src="<%=request.getContextPath()%>/static/js/game_ui.js"></script>
+    <script defer src="<%=request.getContextPath()%>/static/js/websocket.js"></script>
+    </script>
 </head>
-<script>
-  const roomId = "<%= room.getRoomId() %>";
-  const socket = new WebSocket(
-          "ws://" + location.host + "/omok/ws/game/" + roomId
-  );
 
-  socket.onopen = () => {
-    console.log("WebSocket 연결 성공");
-  };
-
-  socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log("RECEIVED:", data);
-
-    switch (data.type) {
-      case "COUNTDOWN":
-        showCountdown(data.sec);
-        break;
-      case "GAME_START":
-        startGameUI();
-        break;
-      case "ROOM_WAIT":
-        status.innerText = "상대방을 기다리는 중...";
-        countdown.innerText = "";
-        break;
-      case "MOVE":
-        drawStone(data.x, data.y, data.color);
-
-        // 상대가 두면 내 턴으로 변경
-        currentTurn = data.color === "BLACK" ? "WHITE" : "BLACK";
-        break;
-    }
-  };
-
-  socket.onclose = () => {
-    console.log("WebSocket 연결 종료");
-  };
-
-  function showCountdown(sec) {
-    const status = document.getElementById("status");
-    const countdown = document.getElementById("countdown");
-
-    status.innerText = "게임 준비 중...";
-    countdown.innerText = "시작까지 " + sec + "초";
-  }
-
-
-</script>
 <body>
 
-<h2>방 입장</h2>
-<p>Room ID: <%= room.getRoomId() %></p>
-<p>Owner: <%= room.getOwnerId() %></p>
+<div class="room-container">
+    <div class="room-header">
+        <div class="room-info">Room ID: <span id="roomIdDisplay"><%= room.getRoomId() %></span></div>
+        <div id="status" class="game-status">대기 중...</div>
+    </div>
 
-<!-- 상태 표시 -->
-<p id="status">상대방을 기다리는 중...</p>
+    <div id="countdownOverlay" class="countdown-overlay" style="display: none;">
+        <div id="countdown" class="countdown-number"></div>
+    </div>
 
-<!-- 카운트다운 표시 -->
-<p id="countdown"></p>
+    <!-- 왼쪽 : 게임 -->
+    <section class="game-section">
+        <!-- 게임 보드 영역 -->
+        <div class="board-area">
+            <div class="player player-left">
+                <div class="profile-frame">
+                    <img class="profile-img" src="">
+                </div>
+                <div class="player-nickname"></div>
 
-<!-- 오목판 영역 -->
-<div id="board" style="display:none;"></div>
-<script>
-  let currentTurn = "BLACK";
-  const BOARD_SIZE = 15;
-  const boardState = Array.from({ length: BOARD_SIZE },
-          () => Array(BOARD_SIZE).fill(null));
+                <div class="speech-bubble" id="bubble-p1">
+                    <span class="bubble-text"></span>
+                </div>
+            </div>
 
-  function startGameUI() {
-    const status = document.getElementById("status");
-    const countdown = document.getElementById("countdown");
-    const board = document.getElementById("board");
+            <div class="board-stack">
+                <!-- 타이틀 -->
+                <div class="game-title floating-title">
+                    <img src="<%=request.getContextPath()%>/static/img/game/gametitle.png" alt="SpongeBob Omok">
+                </div>
+                <div class="board-wrapper">
+                    <div id="board"></div>
+                </div>
 
-    status.innerText = "게임 시작!";
-    countdown.innerText = "";
+                <!-- 타이머 바   -->
+                <div class="timerbar"></div>
+            </div>
+            <div class="player player-right">
+                <div class="profile-frame">
+                    <img class="profile-img" src="">
+                </div>
+                <div class="player-nickname"></div>
 
-    board.style.display = "block";
-    renderBoard();
-  }
+                <div class="speech-bubble" id="bubble-p2">
+                    <span class="bubble-text"></span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  function renderBoard() {
-    const board = document.getElementById("board");
-    board.innerHTML = "";
-    board.style.display = "grid";
-    board.style.gridTemplateColumns = `repeat(15, 30px)`;
-    board.style.gridTemplateRows = `repeat(15, 30px)`;
-    board.style.gridAutoFlow = "row";
-    board.style.gap = "1px";
-    board.style.width = `${15 * 31}px`;
+    <div class="vertical-divider"></div>
 
-    for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        const cell = document.createElement("div");
-        cell.style.width = "30px";
-        cell.style.height = "30px";
-        cell.style.border = "1px solid #333";
-        cell.style.display = "flex";
-        cell.style.alignItems = "center";
-        cell.style.justifyContent = "center";
-        cell.style.cursor = "pointer";
-        cell.style.userSelect = "none";
+    <!-- 오른쪽 : 채팅 -->
+    <section class="chat-section">
 
-        cell.dataset.x = x;
-        cell.dataset.y = y;
+        <button id="leaveBtn" class="leave-btn">LEAVE</button>
 
-        cell.onclick = () => {
-          placeStone(x, y, cell);
-        };
+        <div id="chatLog" class="chat-log"></div>
 
-        board.appendChild(cell);
-      }
-    }
-  }
+        <div class="chat-input">
+            <input id="chatInput" placeholder="메시지 입력">
+            <button id="sendChat">SEND</button>
+        </div>
 
-  function placeStone(x, y, cell) {
-    if (cell.innerText !== "") return;
+    </section>
+</div>
 
-    // 현재 턴의 돌 표시
-    drawStone(x, y, currentTurn);
 
-    const message = {
-      type: "MOVE",
-      x: x,
-      y: y,
-      color: currentTurn
-    };
-
-    socket.send(JSON.stringify(message));
-
-    // 턴 전환
-    currentTurn = currentTurn === "BLACK" ? "WHITE" : "BLACK";
-
-  }
-
-  function drawStone(x, y) {
-    const index = y * BOARD_SIZE + x;
-    const cell = document.getElementById("board").children[index];
-
-    if (cell.innerText !== "") return;
-
-    if (currentTurn === "BLACK") {
-      cell.innerText = "●";
-      cell.style.color = "black";
-    } else {
-      cell.innerText = "○";
-      cell.style.color = "black";
-    }
-
-    cell.style.fontSize = "20px";
-  }
-
-</script>
 </body>
+
+
 </html>

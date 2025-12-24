@@ -1,26 +1,27 @@
 package team.omok.omok_mini_project.manager;
 
-import team.omok.omok_mini_project.domain.Room;
-import team.omok.omok_mini_project.domain.UserVO;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.websocket.Session;
+
+import team.omok.omok_mini_project.controller.LobbyWebSocket;
+import team.omok.omok_mini_project.domain.Room;
+import team.omok.omok_mini_project.enums.RoomStatus;
+
 /**
+ * 방 저장소 + 조회 전용
+ * <p>
  * 서버 전체에 존재하는 모든 room을 관리하며, 싱글톤으로 구현된다.
  * RoomManager는 Room 상태를 알지 못하며,
- * 오직 조회/생성/삭제만 수행한다.
+ * 오직 생성/조회/삭제/목록 반환
  *
- * @function RoomManager.getInstance()
- * @function public Room getRoomById(String roomId)
- * @function public List<Room> getWaitingRooms()
- * @function public Room createRoom(String userId)
- * @function public boolean removeRoom(int roomId)
  * @see Room
  */
+
 public class RoomManager {
     private static final RoomManager instance = new RoomManager();          // 싱글톤 인스턴스
     private final Map<String, Room> rooms = new ConcurrentHashMap<>();      // 서버에 존재하는 방 리스트(roomId, Room)
@@ -29,26 +30,35 @@ public class RoomManager {
         return instance;
     }
 
-
+    // 방 생성
     public Room createRoom(int userId) {
         String roomId = UUID.randomUUID().toString();
         Room room = new Room(roomId, userId);
         rooms.put(roomId, room);
         System.out.println("[INFO]RoomManager - createRoom:" + roomId);
+
+        LobbyWebSocket.broadcastRoomList();
+
         return room;
     }
 
-    public void enterRoom(String roomId, UserVO user) {
+    public void enterRoomAsSpectator(String roomId, Session session) {
         Room room = rooms.get(roomId);
         if (room == null) {
             throw new IllegalArgumentException("방이 존재하지 않습니다");
         }
-        System.out.println("[INFO]RoomManager - enterRoom:" + roomId);
-        room.tryAddPlayer(user.getUserId());
+        room.addSpectatorSession(session);
     }
 
-    public boolean removeRoom(String roomId){
-        return rooms.remove(roomId) != null;
+    public boolean removeRoom(String roomId) {
+        boolean removed = rooms.remove(roomId) != null;
+
+        // 로비에 방 목록 업데이트 전송 (실시간으로 방이 사라짐)
+        if (removed) {
+            LobbyWebSocket.broadcastRoomList();
+        }
+
+        return removed;
     }
 
     public Room getRoomById(String roomId) {
@@ -63,6 +73,14 @@ public class RoomManager {
         return rooms.values().stream()
                 .filter(room -> !room.isFull())
                 .sorted(Comparator.comparingLong(Room::getCreatedAt))  // 생성 시간 오름차순
+                .toList();
+    }
+    
+    // 로비에 보여줄 방 목록: 대기 + 진행중(관전) 포함, 종료(END)만 제외
+    public List<Room> getLobbyRooms() {
+        return rooms.values().stream()
+                .filter(room -> room.getStatus() != RoomStatus.END)
+                .sorted(Comparator.comparingLong(Room::getCreatedAt))
                 .toList();
     }
 
