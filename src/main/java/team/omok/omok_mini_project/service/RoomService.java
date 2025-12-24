@@ -53,7 +53,7 @@ public class RoomService {
     public List<Room> getWaitingRooms() {
         return roomManager.getWaitingRooms();
     }
-    
+
     // 로비에 보여줄 방 목록 가져오기 (대기 + 진행중, END 제외)
     public List<Room> getLobbyRooms() {
         return roomManager.getLobbyRooms();
@@ -122,7 +122,6 @@ public class RoomService {
 
     // 소켓 onClose
     // RoomService.java
-
     public void onLeave(String roomId, int userId, Session session) {
         Room room = getRoomOrThrow(roomId);
 
